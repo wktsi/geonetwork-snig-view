@@ -15,7 +15,6 @@ A versão adaptada do GeoNetwork para o SNIG (https://github.com/wktsi/core-geon
 2. Adicionar o projeto da *skin* como um submódulo 
 ```
 git submodule add -b 3.4.x https://github.com/wktsi/geonetwork-snig-view.git snig
-git submodule init
 ```
 
 ## Integrar a *skin* numa instalação existente do GeoNetwork
