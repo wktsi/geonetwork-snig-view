@@ -1,0 +1,151 @@
+[gn-main-viewer], .gn-main-viewer {
+    position: relative;
+    height: calc(~"100vh - 290px");
+}
+[gn-main-viewer] [ngeo-map], .gn-main-viewer [ngeo-map] {
+	height: calc(~"100vh - 180px");
+}
+@media (max-height: 767px) {
+	[gn-main-viewer] [ngeo-map], .gn-main-viewer [ngeo-map] {
+	    height: calc(~"100vh - 125px");
+	}
+}
+
+[gn-main-viewer] .panel-tools, .gn-main-viewer .panel-tools {
+	z-index: 99;
+    /*max-height: calc(~"100vh - 16em");*/
+}
+
+[gn-main-viewer] .control-tools, .gn-main-viewer .control-tools {
+	position: absolute;
+    top: 60px;
+    left: 5px;
+    bottom: auto;
+
+	button:focus [role=tooltip], button:hover [role=tooltip] {
+	    border-radius: 0 .2em .2em .0;
+	    left: 2.8em;
+	    right: auto;
+	}
+}
+
+
+[gn-main-viewer], .gn-main-viewer {
+	[gn-localisation-input] .input-group-addon:first-of-type {
+		display: none;
+	}
+}
+
+[gn-main-viewer] .panel-tools, .gn-main-viewer .panel-tools {	
+	.panel-heading {
+		padding-right: 5px;
+    	/*background: rgba(226, 34, 34, 1);*
+    	/*background-color: #e2222200;*/
+	}
+
+	.radio input[type="radio"], .radio-inline input[type="radio"], 
+	.checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+	    position: relative;
+	    margin-left: 0px;
+	}
+	
+	label {
+	    padding: 0px 0px;
+	}
+}
+
+[gn-main-viewer] > .panel-tools:hover, .gn-main-viewer > .panel-tools:hover {
+    background: rgba(255, 255, 255, .9);
+}
+
+[gn-main-viewer] .search-container, .gn-main-viewer .search-container {
+    left: 5px;
+    width: 19em;
+}
+
+[gn-main-viewer] gn-features-tables, .gn-main-viewer .gn-viewer-info-pane {
+	/*max-width: 90%;*/
+	/*bottom: -6em;*/
+    left: 45px;
+    right: 45px;
+}
+.gn-features-table .btn.close {
+    position: absolute;
+    right: 0px;
+    z-index: 10;	
+}
+
+
+[gn-main-viewer] .tools,
+.gn-main-viewer .tools {
+	top: 4em;
+}
+
+[gn-main-viewer] .ol-attribution.ol-control ul {
+	font-size: 1rem;
+}
+[gn-main-viewer] .ol-attribution.ol-control button {
+	background-color: rgba(1, 36, 65, 0.5);
+	font-size: 1.14em;
+}
+
+/* Fullscreen */
+#fullscreen:fullscreen [gn-main-viewer] {
+	height: 100%;
+}
+#fullscreen:fullscreen [gn-main-viewer] [ngeo-map] {
+	height: 100%;
+}
+.ol-full-screen.ol-control {
+	top: 1rem;
+	right: 0;
+}
+.ol-full-screen.ol-control button {
+	padding: .6rem;
+    width: 2em;
+    height: 2em;
+    background: rgba(255, 255, 255, 0.8);
+	border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid rgb(233, 221, 221);    
+    color: black;    
+	font-family: FontAwesome !important;
+	font-size: 1.2em;
+    font-weight: 400;        
+}
+.ol-full-screen.ol-control button:after {
+    content: "";
+}
+/*
+.ol-full-screen.ol-control button  {
+  visibility: hidden;
+}
+.ol-full-screen.ol-control button:after {
+    content: "\f065";
+    visibility: visible;
+    position: absolute;
+    padding: .6rem;
+    padding-top: 12px;
+    width: 1.8em;
+    height: 1.8em;
+    background: rgba(255, 255, 255, 0.8);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid #e9dddd;
+    color: black;    
+    left: 3px;
+    top: 3px; 
+}
+*/
+[gn-main-viewer] .tools .btn span.fa-expand:before {
+    content: "\f07e";
+}
+
+[gn-main-viewer] .tools .btn-snig-help {
+	background: rgba(20, 19, 19, 0.8);
+}
+[gn-main-viewer] .tools .btn-snig-help > a,
+[gn-main-viewer] .tools .btn-snig-help > a:hover {
+	color: white;
+	text-decoration: none;
+}

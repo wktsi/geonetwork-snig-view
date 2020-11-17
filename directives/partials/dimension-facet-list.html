@@ -1,0 +1,305 @@
+<div class="gn-facet-list">
+
+  <!--Collapse all button for first panel-->
+  <div class="btn-group width-100 flex-row flex-center" ng-hide="isTabMode">
+    <button type="button" class="btn btn-default btn-sm gn-facet-toggle-btn"
+      ng-click="expandAll()" title="{{'expandAllFacet' | translate}}">
+      <i class="fa fa-plus-circle"/>
+      <span translate>expandAllFacetLabel</span>
+    </button>
+    <button type="button" class="btn btn-default btn-sm gn-facet-toggle-btn"
+      ng-click="collapseAll()" title="{{'collapseAllFacet' | translate}}">
+      <i class="fa fa-minus-circle"/>
+      <span translate>collapseAllFacetLabel</span>
+    </button>
+  </div>
+
+  <!-- Política de Dados -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'dataPolicy'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f)">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <!--<i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-arrow-circle-right' : 'fa-arrow-circle-down'"></i>-->	    
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <!-- <div data-gn-facet-dimension-category="f.category" -->
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div>   
+  
+  <!-- Dados Abertos -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'openServiceType'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f)">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div>
+  
+  <!-- Temas -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  	<div data-ng-if="f['@name'] == 'topicCat'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f)">
+	
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{'themes' | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category-ordered.html">	         
+	    </div>    
+	  </div>
+  </div>  
+  
+  
+  <!-- Entidade Produtora -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'orgNameSNIG'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f)">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{'orgResponsibleName' | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-display-filter="true"
+	         data-category-max-items="9999"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-organization.html">
+	    </div>                            
+      </div>
+  </div>  
+  
+  <!-- Cobertura Geográfica -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'geographicCoverageDesc'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f)">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div> 
+
+  <div data-ng-if="!isTabMode">
+    
+    <a style="cursor: pointer" ng-click="showFilters()">
+    	<span style="font-weight: bold" data-ng-bind-html="(flgShowFilters ? 'Ocultar filtros' :'Mostrar mais filtros...')"</span>
+	</a>
+	
+  <!-- Cartografia -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'cartografia'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-gn-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}">
+	    </div>                            
+      </div>
+  </div> 
+ 
+ 
+ <!-- Tipo de Dados -->
+ <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'dataType'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div> 
+  
+  <!-- Escala -->
+  <div data-ng-if="!isTabMode" 
+ 	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'denominatorRange'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+	
+		    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+		      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+		      {{fLabel | translate}}
+		    </h4>
+		    <div data-snig-facet-dimension-category="f.category"
+		         data-category-key="fLabel"
+		         data-params="params"
+		         data-facet-config="facetConfig"
+		         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+		         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+		    </div>                            
+	  </div>
+ </div>
+
+  <!-- Resolucao -->
+  <div data-ng-if="!isTabMode" 
+ 	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'resolutionRange'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+	
+		    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+		      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+		      {{fLabel | translate}}
+		    </h4>
+		    <div data-snig-facet-dimension-category="f.category"
+		         data-category-key="fLabel"
+		         data-params="params"
+		         data-facet-config="facetConfig"
+		         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+		         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+		    </div>                            
+	  </div>
+ </div>
+  
+  <!-- Data de Referência -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'referenceDateRange'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div>
+  
+  <!-- INSPIRE Report -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'inspirecore'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{'inspireReport' | translate}}
+	    </h4>
+	    <div data-gn-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-inspire-report.html">
+	    </div>                            
+      </div>
+  </div> 
+  
+  <!--  Formato -->
+  <div data-ng-if="!isTabMode" 
+  	data-ng-repeat="f in dimension">
+	  <div data-ng-if="f['@name'] == 'dataFormat'"
+	       data-ng-init="fLabel = getLabel(f);fLvlCollapse[fLabel] = false"
+	       class="gn-facet gn-facet-{{f['@label']}}"
+	       data-ng-show="f.category && isDisplayed(f) && flgShowFilters">
+
+	    <h4 data-gn-collapsible="fLvlCollapse[fLabel]">
+	      <i class="fa fa-fw" data-ng-class="fLvlCollapse[fLabel] ? 'fa-angle-left' : ''"></i>
+	      {{fLabel | translate}}
+	    </h4>
+	    <div data-snig-facet-dimension-category="f.category"
+	         data-category-key="fLabel"
+	         data-params="params"
+	         data-facet-config="facetConfig"
+	         data-ng-class="{'collapse': fLvlCollapse[fLabel]}"
+	         template="../../catalog/views/snig/directives/partials/dimension-facet-category.html">
+	    </div>                            
+      </div>
+  </div>  
+     		  
+  <ul class="nav nav-pills" data-ng-if="isTabMode">
+    <li data-ng-repeat="c in tabs.category | orderBy: 'label'"
+        data-ng-init="path = buildPath(c);"
+        role="presentation"
+        data-ng-class="{'active': c.isSelected}">
+      <a href="" title="{{c['@label'] || c['@value']}}"
+         data-ng-click="filter(c, $event)">
+        <span class="gn-facet-label">{{(c['@label'] || c['@value']) | characters:30}}</span>&nbsp;
+        <span class="gn-facet-count">({{c['@count']}})</span>
+      </a>
+    </li>
+  </ul>
+  
+</div>

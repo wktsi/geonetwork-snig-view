@@ -1,0 +1,779 @@
+<div data-ng-controller="GnMdViewController" class="container">
+  <div class="alert alert-warning"
+       data-ng-hide="!mdView.loadDetailsFinished || mdView.current.record"
+       data-translate=""
+       data-translate-values="{uuid: '{{recordIdentifierRequested | htmlToPlaintext}}', url: '{{url | encodeURIComponent}}'}">
+    recordNotFound
+  </div>
+  <div class="row"
+       data-ng-show="!mdView.loadDetailsFinished">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+  </div>
+
+  <div class="row gn-md-view"
+       data-ng-show="mdView.current.record">
+    <button class="btn btn-primary"
+            data-ng-click="closeRecord(mdView.current.record)">
+      <i class="fa fa-search"></i> <span><span>
+      {{'backTo' + (fromView || 'search') | translate}}</span></span>
+    </button>
+
+    <button class="btn btn-link"
+            data-ng-class="searchObj.params.from == (mdView.current.index + 1) ? 'disabled' : ''"
+            data-ng-show="mdView.records.length > 1"
+            data-ng-click="previousRecord()">
+      <i class="fa fa-angle-left"></i>
+      <span data-ng-show="mdView.current.index === 0" data-translate="">previousPage</span>
+      <span data-ng-hide="mdView.current.index === 0" data-translate="">previous</span>
+    </button>
+
+    <button class="btn btn-link"
+            data-ng-class="mdView.current.index === mdView.records.length - 1 &&
+                           searchObj.params.to > searchInfo.count &&
+                           searchInfo.count > searchObj.params.from ? 'disabled' : ''"
+            data-ng-show="mdView.records.length > 1"
+            data-ng-click="nextRecord()">
+      <span data-ng-show="mdView.current.index === mdView.records.length - 1" data-translate="">nextPage</span>
+      <span data-ng-hide="mdView.current.index === mdView.records.length - 1" data-translate="">next</span>
+      <i class="fa fa-angle-right"></i>
+    </button>
+
+	<!-- 
+    <div class="btn-group pull-right">
+      <button type="button" class="btn btn-default dropdown-toggle"
+              data-toggle="dropdown"
+              aria-expanded="false">
+        <i class="fa fa-eye"></i>
+        <span data-translate="" class="hidden-sm hidden-xs">chooseAView</span>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li data-ng-class="currentFormatter == undefined ? 'disabled' : ''">
+          <a href="" data-ng-click="format()">
+            <i class="fa fa-fw"></i>
+            <span data-translate="">defaultView</span>
+          </a>
+        </li>
+        <li data-ng-repeat="f in formatter.list"
+            data-ng-class="f === currentFormatter ? 'disabled' : ''">
+          <a href="" data-ng-click="format(f)">
+            <i class="fa fa-fw"></i>
+            {{f.label | translate}}
+          </a>
+        </li>
+      </ul>
+    </div>
+     -->
+
+    <div class="gn-md-actions-btn pull-right"
+         data-gn-md-actions-menu="mdView.current.record"/>
+
+    <a class="btn btn-danger gn-md-delete-btn pull-right"
+       data-ng-show="user.canEditRecord(mdView.current.record)"
+       data-gn-click-and-spin="deleteRecord(mdView.current.record)"
+       data-gn-confirm-click="{{'deleteRecordConfirm' | translate:mdView.current.record}}"
+       title="{{'delete' | translate}}">
+
+      <i class="fa fa-times"></i>
+      <span data-translate="" class="hidden-sm hidden-xs">delete</span>
+    </a>
+
+    <a class="btn btn-primary gn-md-edit-btn pull-right"
+       data-ng-show="user.canEditRecord(mdView.current.record)"
+       data-ng-href="catalog.edit#/metadata/{{mdView.current.record.getId()}}?redirectUrl=catalog.search%23%2Fmetadata%2F{{mdView.current.record.getUuid()}}"
+       title="{{'edit' | translate}}">
+      <i class="fa fa-pencil"></i>
+      <span data-translate="" class="hidden-sm hidden-xs">edit</span>
+    </a>
+
+    <div data-ng-show="usingFormatter"
+         id="gn-metadata-display"
+         class="gn-metadata-display">
+    </div>
+
+
+    <div data-ng-show="!usingFormatter" class="gn-metadata-display">
+
+      <div class="col-md-9 gn-record">
+        <h1>
+          <!-- <i class="fa gn-icon-{{mdView.current.record.type[0]}}"/> -->
+          {{mdView.current.record.title || mdView.current.record.defaultTitle}}
+        </h1>
+        
+        <h2>
+          {{mdView.current.record.contacts.resource || mdView.current.record.contacts.distribution}}
+        </h2>        
+        
+        <div data-ng-if="mdView.current.record.dataPolicy && mdView.current.record.dataPolicy.toLowerCase() == 'dados abertos'"
+             title="{{mdView.current.record.dataPolicy}}"
+             class="gn-policy gn-policy-mdview gn-policy-openData}}">
+          {{mdView.current.record.dataPolicy}}
+        </div>        
+
+        <!-- <h2 data-translate="">aboutThisResource</h2> -->
+        <table class="table table-striped">
+          <tbody>
+          
+           <tr
+              data-ng-if="mdView.current.record.category.length > 0 ||
+                      mdView.current.record.topicCat.length > 0">
+            <th data-translate="">theme</th>
+            <td>
+              <!-- 
+              <button data-ng-repeat="cat in mdView.current.record.category"
+                   data-ng-click="search({'_cat': cat})"
+                   class="btn btn-sm btn-default"
+                   title="{{'clickToFilterOn' | translate}} {{('cat-' + cat) | translate}}">
+                <span class="fa gn-icon-{{cat}} resource-color"></span>&nbsp;
+                {{('cat-' + cat) | translate}}
+              </button>
+              <button data-ng-repeat="cat in mdView.current.record.topicCat track by $index"
+                   data-ng-click="search({'topicCat': cat})"
+                   class="btn btn-sm btn-default"
+                   title="{{'clickToFilterOn' | translate}} {{cat | translate}}">
+                <span class="fa gn-icon-{{cat}} topic-color"></span>&nbsp;
+                {{cat | translate}}
+              </button>
+              -->
+              <button data-ng-repeat="cat in mdView.current.record.category"
+                   class="btn btn-sm btn-default btn-snig-topic">
+                <span class="fa gn-icon-{{cat}} resource-color"></span>&nbsp;
+                {{('cat-' + cat) | translate}}
+              </button>              
+			  <button data-ng-repeat="cat in mdView.current.record.topicCat track by $index"
+                   class="btn btn-sm btn-default btn-snig-topic">
+                <span class="fa gn-icon-{{cat}} topic-color"></span>&nbsp;
+                {{cat | translate}}
+              </button>
+            </td>
+           </tr>
+           
+           <tr data-ng-if="mdView.current.record.creationDate ||
+                             mdView.current.record.publicationDate ||
+                             mdView.current.record.revisionDate">
+            <th>{{ 'referenceDate' | translate }} 
+            	<span data-ng-show="md.revisionDate"> ({{ 'referenceDateRevision' | translate}})</span>
+            	<span data-ng-show="!md.revisionDate&&md.creationDate">({{ 'referenceDateCreation' | translate}})</span>
+            	<span data-ng-show="!md.revisionDate&&!md.creationDate&&md.publicationDate">({{ 'referenceDatePublication' | translate}})</span>
+            </th>
+            <td>
+              <p data-ng-show="md.revisionDate" data-gn-humanize-time="{{md.revisionDate|empty}}" data-format="DD-MM-YYYY" />
+              <p data-ng-show="!md.revisionDate&&md.creationDate" data-gn-humanize-time="{{md.creationDate|empty}}" data-format="DD-MM-YYYY"/>
+              <p data-ng-show="!md.revisionDate&&!md.creationDate&&md.publicationDate" data-gn-humanize-time="{{md.publicationDate|empty}}" data-format="DD-MM-YYYY"/>              
+            </td>
+           </tr>           
+                     
+          </tbody>
+        </table>
+
+        <!-- Display the first metadata status (apply to ISO19139 record) -->
+        <!--  
+        <div data-ng-if="mdView.current.record.status_text.length > 0"
+             title="{{mdView.current.record.status_text[0]}}"
+             class="gn-status gn-status-mdview gn-status-{{mdView.current.record.status[0]}}">
+          {{mdView.current.record.status_text[0]}}
+        </div>
+        -->
+        <div>
+        	<h2 data-translate="">dataPolicy</h2>
+        	
+	        <table class="table table-striped">
+	          <tbody>
+		          <tr data-ng-if="mdView.current.record.classification_text">
+		            <th data-translate="">classification</th>
+		            <td>{{mdView.current.record.classification_text}}</td>
+		          </tr>
+		          <tr data-ng-if="mdView.current.record.legalConstraints">
+		            <th data-translate="">legalConstraints</th>
+		            <td>
+		              <p data-ng-repeat="c in mdView.current.record.legalConstraints track by $index">
+		                <span data-gn-lynky="{{c}}" />
+		              </p>
+		            </td>
+		          </tr>
+		
+		          <tr data-ng-if="mdView.current.record.securityConstraints">
+		            <th data-translate="">securityConstraints</th>
+		            <td>
+		              <p data-ng-repeat="c in mdView.current.record.securityConstraints track by $index">
+		                <span data-gn-lynky="{{c}}" />
+		              </p>
+		            </td>
+		          </tr>
+		
+		
+		          <tr data-ng-if="mdView.current.record.resourceConstraints">
+		            <th data-translate="">resourceConstraints</th>
+		            <td>
+		              <p data-ng-repeat="c in mdView.current.record.resourceConstraints track by $index">
+		                <span data-gn-lynky="{{c}}" />
+		              </p>
+		            </td>
+		          </tr>		          
+	          </tbody>
+	        </table>        	
+        </div>
+        		
+        
+        
+        <div data-gn-related-observer>
+          <div data-gn-related="mdView.current.record"
+               data-user="user"
+               data-types="onlines"
+               data-has-results="hasRelations.onlines"
+               data-title="{{'downloadsAndResources' | translate}}"
+               template="../../catalog/views/snig/directives/partials/relatedsimple.html">
+          </div>
+
+          <div data-gn-related="mdView.current.record"
+               data-user="user"
+               data-types="parent|children|services|datasets"
+               data-title="{{'associatedResources' | translate}}"
+               template="../../catalog/views/snig/directives/partials/related.html">
+          </div>
+        </div>
+
+
+
+        <!--<h2 data-translate="">preview</h2>-->
+        <!--<div class="gn-map-preview"/>-->
+
+
+
+		<!-- 
+        <div data-gn-related-observer>
+          <div data-gn-related="mdView.current.record"
+               data-user="user"
+               data-types="fcats|related"
+               data-title="{{'featureCatalog' | translate}}">
+          </div>
+          <div data-gn-related="mdView.current.record"
+               data-user="user"
+               data-types="siblings|associated|related"
+               data-title="{{'siblings' | translate}}">
+          </div>
+        </div>
+         -->
+
+		<br/>
+        
+        <div class="alert alert-info"
+             data-ng-bind-html="(mdView.current.record.abstract || mdView.current.record.defaultAbstract) | linky | newlines"/>        
+
+		<!-- Cobertura Geográfica e Tipo de Cartografia -->
+        <table class="table table-striped">
+          <tbody>
+           <tr data-ng-if="mdView.current.record.geographicCoverageDesc">
+            <th data-translate="">geograhicCoverage</th>
+			<td>{{mdView.current.record.geographicCoverageDesc | translate }}</td>
+           </tr>                     
+           <tr data-ng-if="mdView.current.record.cartografia">
+            <th data-translate="">cartography</th>
+            <td>{{mdView.current.record.cartografia | translate }}</td>
+           </tr>
+           <tr data-ng-if="mdView.current.record.crsDetails">
+            <th data-translate="">referenceSystem</th>
+            <td>            
+              <ul>
+                <li data-ng-repeat="r in mdView.current.record.crsDetails">
+                  <span ng-if="r.name != ''">{{ r.name }} ({{ r.code }})</span>
+                  <span ng-if="r.name == ''">{{ r.code }}</span>
+                </li>
+              </ul>
+            </td>
+           </tr>           
+          </tbody>
+        </table>
+        
+        <! -- TABS SNIG -->
+        <div class="row ngr-margin-bottom" data-related-observer>              
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs">          
+            <li data-ng-class="{active: currentTabMdView === 'responsible'}">
+              <a ng-href="#/metadata/{{mdView.current.record['geonet:info'].uuid}}?tab=responsible"
+                 aria-controls="responsible">
+                <span data-translate="">mdTabResponsible</span>
+              </a>
+            </li>
+            <li data-ng-class="{active: currentTabMdView === 'metainfo'}">
+              <a ng-href="#/metadata/{{mdView.current.record['geonet:info'].uuid}}?tab=metainfo"
+                 aria-controls="metainfo">
+                <span data-translate="">mdTabMetaInfo</span>
+              </a>
+            </li>
+            <li data-ng-class="{active: currentTabMdView === 'keywords'}">
+              <a ng-href="#/metadata/{{mdView.current.record['geonet:info'].uuid}}?tab=keywords"
+                 aria-controls="keywords">
+                <span data-translate="">mdTabKeywords</span>
+              </a>
+            </li>
+            <li data-ng-class="{active: currentTabMdView === 'techinfo'}">
+              <a ng-href="#/metadata/{{mdView.current.record['geonet:info'].uuid}}?tab=techinfo"
+                 aria-controls="techinfo">
+                <span data-translate="">mdTabTechInfo</span>
+              </a>
+            </li>
+          </ul>
+          <!-- /.nav-tabs -->
+          
+
+          <!-- Tab panes -->
+          <div class="tab-content" style="padding-top: 15px">
+			<!--  intro (dummy) -->
+			<div role="tabpanel" class="tab-pane" id="intro"
+                 data-ng-class="{active: currentTabMdView === 'intro'}"
+                 data-ng-show="currentTabMdView === 'intro'">
+			
+        		<div class="alert alert-warning" data-translate="">moreMetadataInfo</div>			
+			</div>
+
+            <!-- responsible -->
+            <div role="tabpanel" class="tab-pane" id="responsible"
+                 data-ng-class="{active: currentTabMdView === 'responsible'}"
+                 data-ng-show="currentTabMdView === 'responsible'">
+
+		        <table class="table table-striped">
+		          <tbody>
+		              <!-- Resource contacts -->			
+			          <tr data-ng-if="mdView.current.record.getAllContacts().resource && mdView.current.record.getAllContacts().resource.length > 0">
+			            <th data-translate="">resource</th>
+			            <td>
+			              <!-- 
+			              <div data-ng-if="!mdView.current.record.getAllContacts().resource || mdView.current.record.getAllContacts().resource.length == 0" 
+			              	class="alert alert-warning" 
+			              	data-translate="">noResponsibleInfo</div>
+			              -->	
+			              <div data-ng-if="mdView.current.record.getAllContacts().resource && mdView.current.record.getAllContacts().resource.length > 0" 
+			              	data-gn-metadata-contacts="mdView.current.record.getAllContacts().resource" 
+			              	data-gn-mode="org-role" />
+			            </td>			            
+			          </tr>
+			          <!-- Distribution contacts -->
+			          <tr data-ng-if="mdView.current.record.getAllContacts().distribution && mdView.current.record.getAllContacts().distribution.length > 0">
+			            <th data-translate="">distribution</th>
+			            <td>
+			              <!-- 
+			              <div data-ng-if="!mdView.current.record.getAllContacts().distribution || mdView.current.record.getAllContacts().distribution.length == 0" 
+			              	class="alert alert-warning" 
+			              	data-translate="">noDistributionResponsibleInfo</div>
+			              -->	
+			              <div data-ng-if="mdView.current.record.getAllContacts().distribution && mdView.current.record.getAllContacts().distribution.length > 0" 
+			              	data-gn-metadata-contacts="mdView.current.record.getAllContacts().distribution" 
+			              	data-gn-mode="org-role" />
+			            </td>
+			          </tr>
+			          <!-- Metadata contacts -->
+			          <tr data-ng-if="mdView.current.record.getAllContacts().metadata && mdView.current.record.getAllContacts().metadata.length > 0">
+			            <th data-translate="">metadata</th>
+			            <td>
+			              <!-- 
+			              <div data-ng-if="!mdView.current.record.getAllContacts().metadata || mdView.current.record.getAllContacts().metadata.length == 0" 
+			              	class="alert alert-warning" 
+			              	data-translate="">noMetadataResponsibleInfo</div>
+			              -->	
+			              <div data-ng-if="mdView.current.record.getAllContacts().metadata && mdView.current.record.getAllContacts().metadata.length > 0" 
+			              	data-gn-metadata-contacts="mdView.current.record.getAllContacts().metadata" 
+			              	data-gn-mode="org-role" />
+			            </td>
+			          </tr>
+			          <!-- Credits -->
+			          <tr data-ng-if="mdView.current.record.credit">
+			            <th data-translate="credit">credits</th>
+			            <td>
+						     <ul data-ng-if="mdView.current.record.credit && mdView.current.record.credit.splice">
+						        <li data-ng-repeat="s in mdView.current.record.credit">{{s}}</li>
+						     </ul>
+						     <ul data-ng-if="!mdView.current.record.credit.splice">
+						        <li>{{mdView.current.record.credit}}</li>
+						     </ul>						     
+			            </td>
+			          </tr>				          	
+		          </tbody>
+		        </table>       
+            </div>
+            
+            <!-- metadata information -->
+            <div role="tabpanel" class="tab-pane" id="metainfo"
+                 data-ng-class="{active: currentTabMdView === 'metainfo'}"
+                 data-ng-show="currentTabMdView === 'metainfo'">
+		
+		        <a class="btn btn-link"
+		           data-ng-href="../api/records/{{mdView.current.record.getUuid()}}/formatters/xml">
+		          <i class="fa fa-file-code-o"/>
+		          <span data-translate="">metadataInXML</span>
+		        </a>
+		
+		        <table class="table table-striped">
+		          <tbody>
+			          <tr>
+			            <th data-translate="">uuid</th>
+			            <td>{{mdView.current.record['geonet:info'].uuid}}</td>
+			          </tr>
+			          <tr>
+			            <th data-translate="">metadataDate</th>
+			            <td>
+			            	<span data-ng-show="mdView.current.record.changeDate" data-gn-humanize-time="{{mdView.current.record.changeDate|empty}}" data-format="DD-MM-YYYY"/>
+			            </td>
+			          </tr>		          
+			          <tr data-ng-if="mdView.current.record.standardName">
+			            <th data-translate="">mdName</th>
+			            <td><p data-ng-bind-html="mdView.current.record.standardName" />
+			            </td>
+			          </tr>
+			          <tr data-ng-if="mdView.current.record.mdLanguage">
+			            <th data-translate="">metadataLanguage</th>
+			            <td>
+			              <ul>
+			                <li data-ng-repeat="l in mdView.current.record.mdLanguage">
+			                  {{l | translate}}
+			                </li>
+			              </ul>
+			            </td>
+			          </tr>
+		          </tbody>
+		        </table>
+            </div>            
+
+            <!-- keywords -->
+            <div role="tabpanel" class="tab-pane" id="keywords"
+                 data-ng-class="{active: currentTabMdView === 'keywords'}"
+                 data-ng-show="currentTabMdView === 'keywords'">
+
+		        <table class="table table-striped">
+		          <tbody>
+		          	   <!--
+			           <tr data-ng-if="mdView.current.record.inspirethemewithac.length > 0 ||
+			                          mdView.current.record.inspirethemewithac.length > 0">
+			              <th data-translate="">inspireTheme</th>
+			              <td>
+			                <button
+			                  data-ng-repeat="cat in mdView.current.record.inspirethemewithac"
+			                  data-ng-click="search({'inspirethemewithac': cat})"
+			                  class="btn btn-sm btn-default {{cat.split('|')[0]}} {{cat.split('|')[0]}}-{{langs[lang]}}"
+			                  title="{{'clickToFilterOn' | translate}} {{cat.split('|')[1]}}">
+			                  <span class="iti-{{cat.split('|')[0]}}"></span>
+			                </button>
+			              </td>
+			          </tr>
+			           -->
+			          
+			          <tr data-ng-repeat="(thesaurus, keywords) in mdView.current.record.keywordGroup">
+			            <th>{{thesaurus | translate}}</th>
+			            <td>
+			              <ul>
+			                <li data-ng-repeat="k in keywords track by $index"
+			                    data-ng-if="k"
+			                    class="tt-cursor">
+			                    <span data-ng-show="k.link == ''">{{k.value}}</span>
+			                    <a href=""
+			                       data-ng-href="{{k.link}}"
+			                       data-ng-hide="k.link == ''">
+			                      {{k.value}}</a>&nbsp;
+			                    <a href=""
+			                       title="{{'clickToFilterOn' | translate}} {{k.value}}"			                       
+			                       data-ng-click="search({'keyword': k.value})">
+			                      <i class="fa fa-search"/>
+			                    </a>
+			                </li>
+			              </ul>
+			            </td>
+			          </tr>		          
+		          </tbody>
+		        </table>		          
+            </div>
+            
+            <!-- techinfo -->
+            <div role="tabpanel" class="tab-pane" id="techinfo"
+                 data-ng-class="{active: currentTabMdView === 'techinfo'}"
+                 data-ng-show="currentTabMdView === 'techinfo'">				
+				
+		        <table class="table table-striped">
+		          <tbody>
+			          <tr data-ng-if="mdView.current.record.identifier">
+			            <th data-translate="">identifier</th>
+			            <td>
+			              <ul>
+			                <li data-ng-repeat="i in mdView.current.record.identifier">
+			                  {{i}}
+			                </li>
+			              </ul>
+			            </td>
+			          </tr>		          
+			          <tr data-ng-if="mdView.current.record.updateFrequency">
+			            <th data-translate="">updateFrequency</th>
+			            <td>{{mdView.current.record.maintenanceAndUpdateFrequency_text}}</td>
+			          </tr>
+			          <tr data-ng-if="mdView.current.record.spatialRepresentationType_text">
+			            <th data-translate="">spatialRepresentationType</th>
+			            <!-- <td>{{mdView.current.record.spatialRepresentationType_text}}</td> -->
+			             <td>
+							<ul data-ng-if="mdView.current.record.spatialRepresentationType_text && mdView.current.record.spatialRepresentationType_text.splice">
+							   <li data-ng-repeat="s in mdView.current.record.spatialRepresentationType_text">{{s}}</li>
+							</ul>
+							<ul data-ng-if="!mdView.current.record.spatialRepresentationType_text.splice">
+							   <li>{{mdView.current.record.spatialRepresentationType_text}}</li>
+							</ul>			              
+			              
+			             </td>			            
+			          </tr>
+			          <tr data-ng-if="mdView.current.record.denominator">
+			            <th data-translate="">scale</th>
+			            <td>
+			              <ul>
+			                <li data-ng-repeat="d in mdView.current.record.denominator"
+			                    class="gn-scale">{{d}}
+			                </li>
+			              </ul>
+			            </td>
+			          </tr>
+			          <tr data-ng-if="mdView.current.record.resolution">
+			            <th data-translate="">resolution</th>
+			            <td>
+			              <ul>
+			                <li data-ng-repeat="r in mdView.current.record.resolution">{{r}}</li>
+			              </ul>
+			            </td>
+			          </tr>
+			
+			          <tr data-ng-if="mdView.current.record.format">
+			            <th data-translate="">format</th>
+			            <td>
+			              <span data-ng-repeat="f in mdView.current.record.format track by $index"
+			                    class="badge">{{f}}</span>
+			            </td>
+			          </tr>
+			          <tr data-ng-if="mdView.current.record.lineage">
+			            <th data-translate="">lineage</th>
+			            <td>
+			              <p data-ng-bind-html="mdView.current.record.lineage | linky | newlines"/>
+			            </td>
+			          </tr>
+		          </tbody>
+		        </table>
+		        
+		        <div data-ng-if="mdView.current.record.attributeTable"
+		             data-gn-attribute-table-renderer="mdView.current.record.attributeTable">
+		        </div>		        
+            </div>
+
+          </div>          
+     
+        </div>
+        <!--  /.TABS SNIG -->        
+
+      </div>
+
+      <div class="col-md-3 gn-md-side">
+        <!-- 
+        <section class="gn-md-side-overview" data-ng-if="mdView.current.record.overviews.length > 0">
+          <h4>
+            <i class="fa fa-fw fa-image"></i>
+            <span data-translate="">overview</span>
+          </h4>
+
+          <div data-ng-repeat="img in mdView.current.record.overviews">
+            <img data-gn-img-modal="img"
+                 class="gn-img-thumbnail img-thumbnail"
+                 alt="{{img.label}}"
+                 data-ng-src="{{img.url}}"/>
+
+            <div class="gn-img-thumbnail-caption"
+                 data-ng-show="img.label">{{img.label}}
+            </div>
+          </div>
+        </section>
+        </br>
+         -->
+		
+		<!-- 
+        <div data-gn-userfeedback='mdView.current.record'
+             data-gn-user={{user.username}}
+             data-ng-if="isUserFeedbackEnabled">
+        </div>
+        <div class="gn-md-feedback-buttons clearfix">
+          <div class="pull-left"
+                  data-gn-userfeedbackfull='mdView.current.record'
+                  data-gn-user={{user.username}}
+                  data-ng-if="isUserFeedbackEnabled">
+          </div>
+          <div class="pull-left"
+                  data-gn-userfeedbacknew='mdView.current.record'
+                  data-gn-user={{user.username}}
+                  data-ng-if="isUserFeedbackEnabled">
+          </div>
+
+        </div>
+        <div data-gn-md-feedback="mdView.current.record"></div>
+         -->
+
+        <section class="gn-md-side-extent" data-ng-if="mdView.current.record.geoBox.length > 0">
+          <h4>
+            <i class="fa fa-fw fa-map-marker"></i>
+            <span data-translate="">extent</span>
+          </h4>
+          <p data-ng-if="mdView.current.record.geoDesc">
+          <ul>
+            <li data-ng-repeat="d in mdView.current.record.geoDesc">{{d}}</li>
+          </ul>
+          </p>
+          <!-- TODO: use map config -->
+          <p data-ng-repeat="bbox in mdView.current.record.geoBox">
+            <img class="gn-img-thumbnail img-thumbnail gn-img-extent"
+                 data-ng-src="{{gnUrl}}/{{lang}}/region.getmap.png?mapsrs=EPSG:3857&width=250&background=settings&geomsrs=EPSG:4326&geom={{mdView.current.record.getBoxAsPolygon($index)}}"/>
+          </p>
+        </section>
+
+		<!-- 
+        <section class="gn-md-side-dates"
+                 data-ng-if="mdView.current.record.creationDate ||
+                             mdView.current.record.publicationDate ||
+                             mdView.current.record.revisionDate ||
+                             mdView.current.record.tempExtentBegin ||
+                             mdView.current.record.tempExtentEnd">
+          <h4>
+            <i class="fa fa-fw fa-clock-o"></i>
+            <span data-translate="">tempExtent</span>
+          </h4>
+
+          <p>
+          <dl data-ng-show="mdView.current.record.creationDate.length > 0">
+            <dt data-translate>creationDate</dt>
+            <dd data-ng-repeat="creaDate in mdView.current.record.creationDate track by $index"
+                data-gn-humanize-time="{{creaDate}}"
+                data-format="YYYY-MM-DD"/>
+          </dl>
+          <dl data-ng-show="mdView.current.record.publicationDate.length > 0">
+            <dt data-translate>publicationDate</dt>
+            <dd data-ng-repeat="pubDate in mdView.current.record.publicationDate track by $index"
+                data-gn-humanize-time="{{pubDate}}"
+                data-format="YYYY-MM-DD"/>
+          </dl>
+          <dl data-ng-show="mdView.current.record.revisionDate.length > 0">
+            <dt data-translate>revisionDate</dt>
+            <dd data-ng-repeat="revDate in mdView.current.record.revisionDate track by $index"
+                data-gn-humanize-time="{{revDate}}"
+                data-format="YYYY-MM-DD"/>
+          </dl>
+          <dl
+            data-ng-show="mdView.current.record.tempExtentBegin ||
+                              mdView.current.record.tempExtentEnd">
+            <dt data-translate>tempExtentBegin</dt>
+            <dd>
+              <span data-gn-humanize-time="{{mdView.current.record.tempExtentBegin}}"/>
+              &nbsp;<i class="fa fa-fw fa-forward"></i>
+              <span data-gn-humanize-time="{{mdView.current.record.tempExtentEnd}}"/>
+            </dd>
+          </dl>
+          </p>
+        </section>
+         -->
+
+        <!--
+        <section data-ng-repeat="c in mdView.current.record.getAllContacts().resource track by $index">
+          <h4>
+            <i class="fa fa-fw fa-envelope"></i>
+            <span>{{c.role | translate}}</span>
+          </h4>
+          <div class="gn-contact">
+            <div class="row">
+              <div class="col-md-6">
+                <address>
+                  <strong title="{{c.address}}">
+                    {{c.org}}<br/>
+                  </strong>
+                  <div data-ng-if="c.email != ''">
+                    <a href="mailto:{{c.email}}">
+                      <span data-ng-hide="c.name">{{c.email}}</span>
+                      <span data-ng-show="c.name">{{c.name}}</span>
+                      <span data-ng-show="c.position">({{c.position}})</span>
+                    </a>
+                  </div>
+                  <div data-ng-if="c.email === ''">{{c.name}}
+                    <span data-ng-show="c.position">({{c.position}})</span>
+                  </div>
+                  <a href="tel:{{c.phone}}"
+                     data-ng-if="c.phone != ''">
+                    <span data-translate="">call</span> {{c.phone}}
+                  </a>
+                </address>
+              </div>
+            </div>
+          </div>
+        </section></br>
+        -->
+
+		<!-- 
+        <section class="gn-md-side-providedby">
+          <h4>
+            <i class="fa fa-fw fa-cog"></i>
+            <span data-translate="">sourceCatalog</span>
+          </h4>
+          <img ng-src="{{gnUrl}}../images/logos/{{mdView.current.record.source}}.png"
+               class="gn-source-logo"/>
+        </section>
+        -->
+		
+		<!-- 
+        <section class="gn-md-side-calendar">
+          <h4>
+            <i class="fa fa-fw fa-calendar"></i>
+            <span data-translate="">updatedOn</span>
+          </h4>
+          <p>
+            <span data-gn-humanize-time="{{mdView.current.record['geonet:info'].changeDate}}"
+                  data-from-now=""></span>
+          </p>
+        </section>
+         -->
+
+		<!-- 
+        <section class="gn-md-side-social">
+          <h4>
+            <i class="fa fa-fw fa-share-square-o"></i>
+            <span data-translate="">shareOn</span>
+          </h4>
+          <a data-ng-href="https://twitter.com/share?url={{socialMediaLink | encodeURIComponent}}"
+             title="{{'shareOnTwitter' | translate}}"
+             target="_blank"
+             class="btn btn-default"><i class="fa fa-fw fa-twitter"></i></a>
+          <a
+            data-ng-href="https://plus.google.com/share?url={{socialMediaLink | encodeURIComponent}}"
+            title="{{'shareOnGooglePlus' | translate}}"
+            target="_blank"
+            class="btn btn-default"><i class="fa fa-fw fa-google-plus"></i></a>
+          <a
+            data-ng-href="https://www.facebook.com/sharer.php?u={{socialMediaLink | encodeURIComponent}}"
+            title="{{'shareOnFacebook' | translate}}"
+            target="_blank"
+            class="btn btn-default"><i class="fa fa-fw fa-facebook"></i></a>
+          <a
+            data-ng-href="http://www.linkedin.com/shareArticle?mini=true&amp;summary={{mdView.current.record.title || mdView.current.record.defaultTitle}}&amp;url={{socialMediaLink | encodeURIComponent}}"
+            title="{{'shareOnLinkedIn' | translate}}"
+            target="_blank"
+            class="btn btn-default"><i class="fa fa-fw fa-linkedin"></i></a>
+          <a
+            data-ng-href="mailto:?subject={{mdView.current.record.title || mdView.current.record.defaultTitle}}&amp;body={{socialMediaLink | encodeURIComponent}}"
+            title="{{'shareByEmail' | translate}}"
+            target="_blank"
+            class="btn btn-default"><i class="fa fa-fw fa-envelope-o"></i></a>
+          <a
+            data-ng-click="mdService.getPermalink(md)"
+            title="{{'permalink' | translate}}"
+            class="btn btn-default"><i class="fa fa-fw fa-link"></i></a>
+        </section>
+		 -->
+
+		<!--
+        <section data-ng-show="isRatingEnabled" class="gn-md-side-rating">
+          <h4>
+            <i class="fa fa-fw"></i>
+            <span data-translate="">rate</span>
+          </h4>
+          <div data-gn-metadata-rate="mdView.current.record"/>
+        </section>
+         -->
+      </div>
+
+    </div>
+  </div>
+</div>

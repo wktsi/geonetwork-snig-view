@@ -1,0 +1,17 @@
+<div class="snig-md-services-links">
+	<div data-ng-show="getViewLinks(md.link).length > 0">
+	  <a class="gn-md-metadata-btn"
+	          data-ng-click="resultviewFns.showViewLinks(md)"
+	          title="{{'viewServiceLink' | translate}} de Visualização (WMS, WMS-C, WMTS)">
+	    	<span class="fa fa-map"></span>
+	  </a>
+	</div>
+	
+	<div data-ng-show="getDowloadLinks(md.link).length > 0">
+	  <a class="gn-md-metadata-btn"
+	          data-ng-click="resultviewFns.showDownloadLinks(md)"
+	          title="{{'viewServiceLink' | translate}} de descarregamento (Ficheiro, WFS, WCS, ATOM)">
+	    	<span class="fa fa-download"></span>
+	  </a>
+	</div>
+</div>

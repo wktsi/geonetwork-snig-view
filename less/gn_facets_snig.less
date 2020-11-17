@@ -1,0 +1,69 @@
+/* Facet / this is a hack to hide a facet
+ not to be displayed because used to get complex
+ field for rendering properly INSPIRE theme icons
+ only. It may be more relevant to have this at the
+ facetsConfigService ? */
+[data-facet=inspireThemesWithAc] {
+  display: none;
+}
+
+.gn-facet-list {
+  h4 {
+    font-size: 14px;
+  }
+  .list-group-item {
+    font-size: 12px;
+    border: 0;
+    border-radius: 0;
+    padding: 5px;
+    label {
+      cursor: pointer;
+      margin-bottom: 0;
+      .gn-facet-toggle {
+        width: 0;
+      }
+      .gn-facet-count {
+        color: #707070;
+      }
+    }
+  }
+  .flex-center {
+    justify-content: left;
+  }
+}
+
+
+/* Facet List Filter */
+.gn-facet .snig-facet-filter {
+    position: relative;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+.gn-facet .snig-facet-filter .clear {
+    right: 2em;
+    position: absolute;
+    top: 0.75em;
+    color: #666;
+    cursor: pointer;
+}
+.gn-facet .snig-facet-filter:before {
+  font-family: FontAwesome;
+  content: "\f0b0";
+  float: right;
+  margin: 0.5em 0.4em 0 0;
+  font-size: 16px;
+  color: #d3d3d3;
+}
+.gn-facet .snig-facet-filter .fa {
+  margin-right: 4px;
+}
+.gn-facet .snig-facet-filter .filter-list {
+  display: block;
+  border: none;
+  border-bottom: 1px solid #1A75AE;
+  border-radius: 0;
+  box-shadow: none;
+  width: 90%;
+}
+
+

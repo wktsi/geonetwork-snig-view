@@ -1,0 +1,142 @@
+<!-- <ul class="list-group gn-resultview">
+  <li class="list-group-item" 
+    data-ng-repeat="md in searchResults.records" 
+    gn-displayextent-onhover="" 
+    gn-zoomto-onclick 
+    gn-fix-mdlinks="">-->
+<ul class="list-group gn-resultview gn-resultview-sumup">
+  <li class="list-group-item gn-grid"
+      data-ng-repeat="md in searchResults.records"
+      data-gn-fix-mdlinks=""
+      data-gn-displayextent-onhover=""
+      data-gn-zoomto-onclick="">    
+
+    <div class="media">
+      <div class="media-body"> 
+        <!--Edit button-->
+        <div class="pull-right hidden-sm">
+          <a ng-href="catalog.edit#/metadata/{{md['geonet:info'].id}}" data-ng-show="isAdmin"
+             class="btn btn-link pull-right">
+            <i class="fa fa-pencil"></i>
+          </a>      		 
+        </div>
+        
+        <!--
+        <div data-ng-click="openRecord($index, md, searchResults.records)">
+          <h4>
+              <input gn-selection-md type="checkbox" ng-model="md['geonet:info'].selected" ng-change="change()" data-ng-show="isAdmin"/>
+          <a data-ng-href="#/metadata/{{md.getUuid()}}"
+              title="{{md.title || md.defaultTitle}}">
+              <span class="fa gn-icon-{{md.type[0]}}" title="{{md.type[0]|translate}}"></span>              
+              {{md.title || md.defaultTitle}}</a>
+          </h4>
+        </div>
+        -->         
+	    <div>
+         	<h3>{{md.title || md.defaultTitle}}</h3>
+        </div>
+        
+        <div data-ng-if="md.dataPolicy && md.dataPolicy.toLowerCase() =='dados abertos'"
+            title="{{md.dataPolicy}}"
+            class="gn-policy gn-policy-openData">{{md.dataPolicy}}
+        </div>        
+                       
+        <div ng-if="md.getContacts().metadata"><h4>{{md.getContacts().resource || md.getContacts().distribution}}</h4></div>
+		
+				
+        <div data-ng-show="md.revisionDate">        
+          <b data-translate="">referenceDate</b> (<span data-translate="">referenceDateRevision</span>): <span data-gn-humanize-time="{{md.revisionDate|empty}}" data-format="DD-MM-YYYY"></span>
+        </div>
+        <div data-ng-show="!md.revisionDate&&md.creationDate">
+          <b data-translate="">referenceDate</b> (<span data-translate="">referenceDateCreation</span>): <span data-gn-humanize-time="{{md.creationDate|empty}}" data-format="DD-MM-YYYY"></span>
+        </div>
+        <div data-ng-show="!md.revisionDate&&!md.creationDate&&md.publicationDate">
+          <b data-translate="">referenceDate</b> (<span data-translate="">referenceDatePublication</span>): <span data-gn-humanize-time="{{md.publicationDate|empty}}" data-format="DD-MM-YYYY"></span>
+        </div>
+
+        <div data-ng-if="md.topicCat.length > 0" class="row-topiccat">
+          <b data-translate="">theme</b>:
+          <!-- 
+          <a class="btn btn-link"
+              data-ng-repeat="t in md.topicCat"
+              data-ng-href="#/search?topicCat={{t}}">{{t | translate}}</a>
+           -->
+           <span data-translate="">{{ md.topicCat[0]| translate }}</span>         
+        </div>
+        
+        <!-- 
+        <div>
+          <b data-translate="">coverage</b>:
+          <span data-ng-if="md.geoDescCode.length > 0">
+          	<span data-ng-repeat="i in md.geoDescCode"
+          		data-ng-if="(i | uppercase) == 'PT1'">
+          	Portugal Continental
+          	</span>
+          	<span data-ng-repeat="i in md.geoDescCode"
+          		data-ng-if="(i | uppercase) == 'PT2'">
+          	Região Autónoma dos Açores
+          	</span>
+          	<span data-ng-repeat="i in md.geoDescCode"
+          		data-ng-if="(i | uppercase) == 'PT2'">
+          	Região Autónoma da Madeira
+          	</span>
+          </span>
+          <span data-ng-if="md.geoDescCode">
+             <span data-ng-if="(md.geoDescCode | uppercase) == 'PT1'">Portugal Continental</span>
+             <span data-ng-if="(md.geoDescCode | uppercase) == 'PT2'">Região Autónoma dos Açores</span>
+             <span data-ng-if="(md.geoDescCode | uppercase) == 'PT3'">Região Autónoma da Madeira</span>
+          </span>          
+        </div>
+        -->
+        <div>
+          <b data-translate="">coverage</b>:
+          <span data-ng-if="isArray(md.geographicCoverageDesc) && md.geographicCoverageDesc.length > 0">
+          	<span data-ng-repeat="i in md.geographicCoverageDesc">{{ i | translate }}</span>
+          </span>
+          <span data-ng-if="md.geographicCoverageDesc">
+             <span>{{ md.geographicCoverageDesc | translate }}</span>
+          </span>          
+        </div>
+                
+		<p class="text-justify" dd-text-collapse dd-text-collapse-max-length="350" dd-text-collapse-text="{{md.abstract || md.defaultAbstract}}"></p>		
+
+	    <!-- Bottom row-->	        
+	    <div class="bottom-row-links">
+	      <div class="gn-grid-related">
+			  <a class="gn-md-metadata-btn"
+			     data-ng-href="#/metadata/{{md.getUuid()}}"
+			     title="{{'metadata' | translate}}">
+			     <span data-translate="">metadata</span>
+			  </a>			  
+	      </div>	            
+	      
+	      <!-- Button for related metadata records (services) -->
+	      <!--
+	      <div class="gn-grid-related" gn-grid-related gn-grid-related-uuid="::md.getUuid()"
+	           template="../../catalog/views/snig/templates/gridRelated.html"></div>
+		  -->
+		
+	      <snig-services-btn></snig-services-btn>	      
+	      <gn-links-btn></gn-links-btn>	      
+	      	      
+	    </div>
+	    <!--END (bottom row) -->
+	    
+	    <!--<div style="clear: both;"></div>-->
+			
+		<!-- TESTE -->
+		<!-- 
+        <div data-gn-related-observer>
+          <div data-gn-related="md"
+               data-user="user"
+               data-types="onlines"
+               data-has-results="hasRelations.onlines"
+               data-title="{{'downloadsAndResources' | translate}}"
+               template="../../catalog/views/snig/directives/partials/relatedteste.html">
+          </div>									
+      	</div>
+      	-->
+	  </div>      	
+    </div>
+  </li>
+</ul>

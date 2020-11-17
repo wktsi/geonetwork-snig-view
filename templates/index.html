@@ -1,0 +1,108 @@
+<!-- Powered by: {{info.site.platform.name}}, version: {{info.site.platform.version}} -->
+<snigcookiewarning></snigcookiewarning>
+<div class="container">
+  
+  <div class="branding" role="banner">
+    <!--<a data-gn-active-tb-item="{{gnCfg.mods.home.appUrl}}">-->
+    <a href="/">
+      <img class="gn-logo"
+           data-ng-src="{{gnUrl}}../catalog/views/snig/images/logo.svg" 
+           title="{{'home'|translate}}"/>      
+    </a>
+    
+    
+    <!-- Menu Portal SNIG -->
+    <div class="navbar navbar-default gn-top-bar" role="navigation">
+	    <div class="container-fluid ng-scope">
+		  <div class="navbar-header">
+		    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar2" aria-expanded="false" aria-controls="navbar">
+		      <span class="sr-only">Toggle navigation</span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		    </button>
+		  </div>
+		  <div id="navbar2" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
+		    <ul class="nav navbar-nav">
+		    <!-- <ul class="nav navbar-nav"> -->
+		      <li class="active btn-aceder">
+		        <a title="Aceder" href="#/home">
+		          <span data-translate="">Aceder</span>
+		        </a>
+		      </li>
+		      <li class="btn-partilhar">
+		        <a title="Aceder" href="/como-partilhar-informacao-geografica">
+		          <span data-translate="">Partilhar</span>
+		        </a>
+		      </li>
+		      <li class="btn-saber-mais">
+		        <a title="Aceder" href="/saber-mais-sobre-snig">
+		          <span data-translate="">Saber Mais</span>
+		        </a>
+		      </li>
+		    </ul>		
+		  </div>		  
+		</div>		
+	</div>
+    <!--  Fim Menu Portal SNIG -->
+    
+  </div>
+    
+  <div class="navbar navbar-default gn-top-bar gn-menu-bar" role="navigation"
+       data-ng-include="'../../catalog/views/snig/templates/top-toolbar.html'">             
+  </div>
+
+  <div data-gn-alert-manager="" id="alerts"></div>
+  <div class="gn-search-page"
+       data-ng-controller="SnigSearchController"
+       role="main">
+       
+    <!--    
+    <div class="gn-divider-bar"></div>
+	-->
+
+    <div class="" data-ng-controller="gnsSNIG">
+
+      <div class="container intro-text" data-ng-show="activeTab == '/home'">
+        <h1 id="homeHeaderText">{{info['system/site/name']}}</h1>
+        <p data-translate="" data-translate-values="{records: '{{searchInfo.count}}'}">searchOver</p>
+      </div>
+
+      <div class="page" data-ng-class="{mappage: activeTab === '/map'}" data-gn-saved-selections="">
+        <div data-ng-include="'../../catalog/views/snig/templates/home.html'"
+            data-ng-show="activeTab == '/home'"/>
+        <div class="snig-results" data-ng-include="'../../catalog/views/snig/templates/results.html'"
+            data-ng-show="activeTab == '/search'"/>
+        <div data-ng-if="isMapViewerEnabled"
+            data-ng-include="'../../catalog/views/snig/templates/map.html'"
+            data-ng-show="activeTab == '/map'"/>
+        <div data-ng-include="'../../catalog/views/snig/templates/recordView.html'"
+            data-ng-show="activeTab == '/metadata'"/>
+      </div>
+    </div>
+  </div>
+  <!-- /.gn-search-page -->
+
+  <!--
+  <div class="navbar navbar-default gn-bottom-bar" role="navigation"
+	   data-ng-include="'../../catalog/views/snig/templates/footer.html'">
+  </div>
+   -->
+  <div class="navbar navbar-default gn-bottom-bar" role="navigation"
+	   data-ng-include="'../../catalog/views/snig/templates/footer.html'">
+  </div>  
+  <!-- 
+  <div id="footer"
+       class="footer clearfix"
+       role="navigation">
+    <div class="pull-left">
+      <a href="http://geonetwork-opensource.org/">
+      <i class="fa fa-fw"></i>
+      <span data-translate="">about</span></a>
+      <span data-translate=""
+            data-translate-values="{platform: '{{info['system/platform/name']}}', version: '{{info['system/platform/version']}}', subversion: ''}">versionDetails</span>
+    </div>
+  </div>
+  -->
+  <!-- /#footer -->
+</div>
