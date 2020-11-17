@@ -14,7 +14,7 @@ A versão adaptada do GeoNetwork para o SNIG (https://github.com/wktsi/core-geon
 1. Mudar para a pasta *core-geonetwork/web-ui/src/main/resources/catalog/views*
 2. Adicionar o projeto da *skin* como um submódulo 
 ```
-git submodule add -b 3.4.x https://github.com/ricardogsena/geonetwork-snig-view snig
+git submodule add -b 3.4.x https://github.com/wktsi/geonetwork-snig-view.git snig
 git submodule init
 ```
 
